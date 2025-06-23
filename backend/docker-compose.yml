@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb_local
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: project_integracao
+      MYSQL_USER: usuario_node
+      MYSQL_PASSWORD: senha_segura
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./models/project_programacao.sql:/docker-entrypoint-initdb.d/project_programacao.sql

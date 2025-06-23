@@ -62,7 +62,7 @@ export class AuthController {
 
   static async login(req, res) {
     const { email, password } = req.body;
-
+    
     // validations
     if (!email) {
       return res.status(422).json({ msg: "O email é obrigatório!" });
@@ -74,7 +74,7 @@ export class AuthController {
 
     // check if user exists
     const user = await Coon.getByParam('user', 'email', email );
-
+    console.log(user)
     if (user.length == 0) {
       return res.status(404).json({ msg: "Usuário não encontrado!" });
     }
@@ -88,22 +88,21 @@ export class AuthController {
     }
 
     try {
-      const secret = process.env.SECRET;
-
+      // const secret = process.env.SECRET;
+      const secret = 'TOMOCREATINAPARACAVALO';
       const token = jwt.sign(
         {
-          id: user[0].id,
+          id: user[0].id
         },
         secret,
-          { expiresIn: '600s' } // ou simplesmente 60
+        { expiresIn: '600s' } // ou simplesmente 60
 
       );
-
       res
         .status(200)
         .json({ msg: "Autenticação realizada com sucesso!", token });
     } catch (error) {
-      res.status(500).json({ msg: error });
+      res.status(500).json({ msg: 'erro' });
     }
   }
 }

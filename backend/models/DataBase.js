@@ -7,8 +7,8 @@ export class Coon {
     if (!Coon.connection) {
       Coon.connection = await mysql.createConnection({
         host: 'localhost',
-        user: 'root',
-        password: '',
+        user: 'usuario_node',
+        password: 'senha_segura',
         database: 'project_programacao',
       });
       console.log('📡 Conectado ao MySQL');
@@ -63,8 +63,6 @@ export class Coon {
       return { status: 500, data: 'Error updating data!' };
     }
   }
-
-  
 }
 //casos de uso
 // await Model.update('products', 7, {

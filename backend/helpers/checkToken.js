@@ -6,7 +6,8 @@ export default function checkToken(req, res, next) {
     if (!token) return res.status(401).json({ msg: "Acesso negado!" });
   
     try {
-      const secret = process.env.SECRET;
+      // const secret = process.env.SECRET;
+      const secret = 'TOMOCREATINAPARACAVALO';
       jwt.verify(token, secret);  
       next();
     } catch (err) {

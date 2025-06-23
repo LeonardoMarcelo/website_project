@@ -7,15 +7,18 @@ import Login from './Components/Login';
 import ContentProducts from './Components/ContentProducts';
 export default function Main() {
   const [page, setPage] = useState("login");
+  const [auth, setAuth] = useState("deslogado");
 
   return (
     <>
       {page === "login" ? (
-        <Login goToRegister={() => setPage("register")} />
+        <Login goToRegister={() => setPage("register")} setAuth={setAuth} />
       ) : (
-        <Register goToLogin={() => setPage("login")} />
+        <Register goToLogin={() => setPage("login")} setAuth={setAuth} />
       )}
-      {/* <ContentProducts/> */}
+      {auth === 'logado' && (
+        <ContentProducts />
+      )}
     </>
   );
 }
