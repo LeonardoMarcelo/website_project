@@ -5,8 +5,9 @@ import {Coon} from '../models/DataBase.js';
 
 export class User {
   static async index(req, res) {
-  
-    res.status(200).json({ msg: "Bem vindo a API!" });
+    const {id_user} = req.body;
+    const user = await Coon.getByParam('user','id', id_user);
+    res.status(200).json({ data: user[0] });
   }
    static async get(req, res) {
     const id = req.params.id;

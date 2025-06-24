@@ -4,7 +4,8 @@ export default function checkToken(req, res, next) {
     const token = authHeader && authHeader.split(" ")[1];
   
     if (!token) return res.status(401).json({ msg: "Acesso negado!" });
-  
+    // Decodifica o token para acessar o payload (incluindo o id)
+   
     try {
       // const secret = process.env.SECRET;
       const secret = 'TOMOCREATINAPARACAVALO';

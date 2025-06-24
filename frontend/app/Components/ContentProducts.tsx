@@ -1,47 +1,65 @@
 "use client";
 import Image from "next/image";
-
 import Footer from "./Footer";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useRef } from "react";
+import Header from "./Header";
 export default function ContentProducts() {
+    const router = useRouter();
+    const [auth, setAuth] = useState<"logado" | "deslogado">("deslogado");
+    const [products, setProducts] = useState<any[]>([]);
+
+    const effectRan = useRef(false);
+
+    useEffect(() => {
+        if (effectRan.current) return;
+        effectRan.current = true;
+
+        const t = localStorage.getItem("token");
+        setAuth(t ? "logado" : "deslogado");
+
+        async function getProducts() {
+            try {
+                const res = await fetch("http://localhost:5000/products/", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${t}`,
+                    },
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.msg);
+                }
+                setProducts(data); // Supondo que data seja um array de produtos
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        if (t) {
+            getProducts();
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("name");
+        localStorage.removeItem("email");
+        localStorage.removeItem("id");
+        window.location.reload();
+    };
+
+    const [showUserInfo, setShowUserInfo] = useState(false);
 
     return (
         <>
+        
             <main className="dark:bg-gray-800 bg-white relative overflow-hidden ">
-                <header className="h-24 sm:h-32 flex items-center z-30 w-full">
-                    <div className="container mx-auto px-6 flex items-center justify-between">
-                        <div className="uppercase text-gray-800 dark:text-white font-black text-3xl">
-                            Watch.ME
-                        </div>
-                        <div className="flex items-center">
-                            <nav className="font-sen text-gray-800 dark:text-white uppercase text-lg lg:flex items-center hidden">
-                                <a href="#" className="py-2 px-6 flex">
-                                    Home
-                                </a>
-                                <a href="#" className="py-2 px-6 flex">
-                                    Watch
-                                </a>
-                                <a href="#" className="py-2 px-6 flex">
-                                    Product
-                                </a>
-                                <a href="#" className="py-2 px-6 flex">
-                                    Contact
-                                </a>
-                                <a href="#" className="py-2 px-6 flex">
-                                    Carrer
-                                </a>
-                            </nav>
-                            <button className="lg:hidden flex flex-col ml-4">
-                                <span className="w-6 h-1 bg-gray-800 dark:bg-white mb-1">
-                                </span>
-                                <span className="w-6 h-1 bg-gray-800 dark:bg-white mb-1">
-                                </span>
-                                <span className="w-6 h-1 bg-gray-800 dark:bg-white mb-1">
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </header>
-                <div className="bg-white dark:bg-gray-800 flex relative z-20 items-center overflow-hidden">
+                <Header auth={auth} handleLogout={handleLogout} />
+                <div id="Home" className="bg-white dark:bg-gray-800 flex relative z-20 items-center overflow-hidden">
                     <div className="container mx-auto px-6 flex relative py-16">
                         <div className="sm:w-2/3 lg:w-2/5 flex flex-col relative z-20">
                             <span className="w-20 h-2 bg-gray-800 dark:bg-white mb-12">
@@ -74,35 +92,66 @@ export default function ContentProducts() {
                     <h1 className="font-bold text-4xl mb-4">Responsive Product card grid</h1>
                 </div>
 
-                <section id="Projects"
-                    className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
-
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                        <a href="#">
-                            <img src="https://images.unsplash.com/photo-1646753522408-077ef9839300?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8NjZ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                alt="Product" className="h-80 w-72 object-cover rounded-t-xl" />
-                            <div className="px-4 py-3 w-72">
-                                <span className="text-gray-400 mr-3 uppercase text-xs">Brand</span>
-                                <p className="text-lg font-bold text-black truncate block capitalize">Product Name</p>
-                                <div className="flex items-center">
-                                    <p className="text-lg font-semibold text-black cursor-auto my-3">$149</p>
-                                    <del>
-                                        <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
-                                    </del>
-                                    <div className="ml-auto"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        fill="currentColor" className="bi bi-bag-plus" viewBox="0 0 16 16">
-                                        <path fillRule="evenodd"
-                                            d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z" />
-                                        <path
-                                            d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" />
-                                    </svg></div>
+                 <section
+                    id="Projects"
+                    className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
+                >
+                    {products.map((product) => (
+                        <div
+                            key={product.id}
+                            className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl"
+                        >
+                            <a href="#">
+                                <div className="relative h-52 w-full">
+                                    <Image
+                                        src={product.image}
+                                        alt={product.name}
+                                        fill
+                                        className="rounded-t-xl object-cover"
+                                        priority
+                                        unoptimized
+                                    />
                                 </div>
-                            </div>
-                        </a>
-                    </div>
+                               
+                              
+                                <div className="px-4 py-3 w-72">
+                                    <span className="text-gray-400 mr-3 uppercase text-xs">
+                                        {product.category}
+                                    </span>
+                                    <p className="text-lg font-bold text-black truncate block capitalize">
+                                        {product.name}
+                                    </p>
+                                    <div className="flex items-center">
+                                        <p className="text-lg font-semibold text-black cursor-auto my-3">
+                                            ${product.price}
+                                        </p>
+                                        <div className="ml-auto">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="20"
+                                                height="20"
+                                                fill="currentColor"
+                                                className="bi bi-bag-plus"
+                                                viewBox="0 0 16 16"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"
+                                                />
+                                                <path
+                                                    d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-2">{product.description}</p>
+                                </div>
+                            </a>
+                        </div>
+                    ))}
                 </section>
 
-                <div className="bg-white dark:bg-gray-800 h-screen h-full py-6 sm:py-8 lg:py-12">
+                <div id="Gallery" className="bg-white dark:bg-gray-800 h-screen h-full py-6 sm:py-8 lg:py-12">
                     <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
                         <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
                             <div className="flex items-center gap-12">
@@ -163,7 +212,9 @@ export default function ContentProducts() {
                         </div>
                     </div>
                 </div>
-            <Footer/>
+            <div id="Footer">
+                <Footer/>
+            </div>
             </main>
 
                     

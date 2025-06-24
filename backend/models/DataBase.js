@@ -7,8 +7,8 @@ export class Coon {
     if (!Coon.connection) {
       Coon.connection = await mysql.createConnection({
         host: 'localhost',
-        user: 'usuario_node',
-        password: 'senha_segura',
+        user: 'root',
+        password: '', 
         database: 'project_programacao',
       });
       console.log('📡 Conectado ao MySQL');
@@ -33,7 +33,6 @@ export class Coon {
   }
   static async create(table, data) {
     await Coon.connect();
-
     const columns = Object.keys(data).join(', ');
     const placeholders = Object.keys(data).map(() => '?').join(', ');
     const values = Object.values(data);

@@ -114,12 +114,18 @@ export class Products {
     }
     static async getAll(req, res) {
 
-        const users = await Coon.getAll('products');
+        const prods = await Coon.getAll('products');
 
-        if (users.length == 0) {
-        return res.status(404).json({ msg: "Usuários não encontrados!" });
+        if (prods.length == 0) {
+            return res.status(404).json({ msg: "Produtos não encontrados!" });
         }
 
-        res.status(200).json(users);
+        await Promise.all(prods.map(async (element) => {
+            const category = await Coon.getByParam('categories', 'id', element.category_id);
+            element.category = category.length > 0 ? category[0].name : null;
+        }));
+
+        console.log(prods)
+        res.status(200).json(prods);
     }
 }

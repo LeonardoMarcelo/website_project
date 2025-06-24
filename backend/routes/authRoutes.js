@@ -13,10 +13,10 @@ const router = express.Router();
 //AUTH
 router.post("/auth/register", AuthController.register);
 router.post("/auth/login", AuthController.login);
+router.post("/auth/getcode", AuthController.getCode);
+router.post("/auth/resetPassword", AuthController.reset);
 
-router.post("/auth/checkToken", checkToken, (req,res) => {
-    res.status(200).json({ msg: "Autenticação realizada com sucesso!" });
-});
+router.post("/auth/checkToken", checkToken, AuthController.index);
 
 
 //USER
