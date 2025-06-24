@@ -82,6 +82,7 @@ export class AuthController {
         .status(422)
         .json({ msg: "A senha e a confirmação precisam ser iguais!" });
     }
+    
     const user = await Coon.
     getByParam('user', 'email', email);
     if (user.length === 0) {
